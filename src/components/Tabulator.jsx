@@ -6,10 +6,12 @@ import toast, { Toaster } from 'react-hot-toast';
 
 const TaskListManager = () => {
   const [tasks, setTasks] = useState([]);
-  const [filterStatus, setFilterStatus] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [table, setTable] = useState(null);
   const [newTask, setNewTask] = useState({ title: '', description: '', status: 'To Do' });
   const [showAddTaskForm, setShowAddTaskForm] = useState(false);
+  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [filterStatus, setFilterStatus] = useState('');
 
   useEffect(() => {
     // Fetch initial task data from the API
@@ -24,6 +26,7 @@ const TaskListManager = () => {
           completed: task.completed,
         }));
         setTasks(formattedData);
+        setFilteredTasks(formattedData); // Set filtered tasks initially
       });
   }, []);
 
@@ -31,7 +34,7 @@ const TaskListManager = () => {
     // Initialize Tabulator table
     if (tasks.length > 0) {
       const newTable = new Tabulator('#task-table', {
-        data: tasks,
+        data: filteredTasks, // Use filteredTasks instead of tasks
         layout: 'fitColumns',
         columns: [
           { title: 'Task ID', field: 'id', width: 80, headerSort: false },
@@ -55,7 +58,7 @@ const TaskListManager = () => {
       });
       setTable(newTable);
     }
-  }, [tasks]);
+  }, [filteredTasks]);
 
   const handleAddTask = () => {
     if (!newTask.title || !newTask.description) {
@@ -70,6 +73,7 @@ const TaskListManager = () => {
     };
     setTasks((prevTasks) => {
       const updatedTasks = [...prevTasks, newTaskWithId];
+      setFilteredTasks(updatedTasks); // Update filtered tasks
       table.setData(updatedTasks);
       return updatedTasks;
     });
@@ -81,21 +85,45 @@ const TaskListManager = () => {
   const handleDelete = (taskId) => {
     setTasks((prevTasks) => {
       const updatedTasks = prevTasks.filter((task) => task.id !== taskId);
+      setFilteredTasks(updatedTasks); // Update filtered tasks
       table.setData(updatedTasks);
       return updatedTasks;
     });
     toast.success('Task deleted successfully!');
   };
 
-  const handleFilter = (e) => {
-    const status = e.target.value;
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    const filteredTasks = tasks.filter((task) => {
+      return (
+        task.title.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        task.description.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+    });
+    setFilteredTasks(filteredTasks);
+    table.setData(filteredTasks);
+  };
+
+  const handleFilter = (status) => {
     setFilterStatus(status);
     if (status) {
-      table.setFilter('status', '=', status); // Apply the Tabulator filter by status
+      const filtered = tasks.filter((task) => task.status === status);
+      setFilteredTasks(filtered);
+      table.setData(filtered);
     } else {
-      table.clearFilter(); // Clear the filter if no status is selected
+      setFilteredTasks(tasks); // Reset filter
+      table.setData(tasks);
     }
   };
+
+  // Task counters by status
+  const taskCounts = tasks.reduce(
+    (counts, task) => {
+      counts[task.status] = (counts[task.status] || 0) + 1;
+      return counts;
+    },
+    { 'To Do': 0, 'In Progress': 0, Done: 0 }
+  );
 
   return (
     <div className="p-4">
@@ -115,7 +143,7 @@ const TaskListManager = () => {
             <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl relative">
               {/* Close Button */}
               <button
-                onClick={() => setShowAddTaskForm(false)}
+                onClick={() => setShowAddTaskForm(false)} // Close the modal
                 className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none"
               >
                 <svg
@@ -171,17 +199,35 @@ const TaskListManager = () => {
         )}
       </div>
 
-      <div className="flex justify-between items-center mb-4">
+      {/* Flex container for Search and Dropdown (Responsive) */}
+      <div className="mb-4 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 items-center">
+        <input
+          type="text"
+          placeholder="Search tasks..."
+          value={searchTerm}
+          onChange={handleSearch}
+          className="border-2 px-3 py-2 rounded w-full sm:w-1/2"
+        />
+
         <select
           value={filterStatus}
-          onChange={handleFilter}
-          className="border rounded px-3 py-2"
+          onChange={(e) => handleFilter(e.target.value)}
+          className="border-2 px-3 py-2 rounded w-full sm:w-1/4"
         >
-          <option value="">All Statuses</option>
+          <option value="">All Tasks</option>
           <option value="To Do">To Do</option>
           <option value="In Progress">In Progress</option>
           <option value="Done">Done</option>
         </select>
+      </div>
+
+      {/* Task Counters */}
+      <div className="mb-4">
+        <div className="flex justify-around text-xl text-pink-500 font-bold">
+          <span>To Do: {taskCounts['To Do']}</span>
+          <span>In Progress: {taskCounts['In Progress']}</span>
+          <span>Done: {taskCounts.Done}</span>
+        </div>
       </div>
 
       <div id="task-table" className="mb-4"></div>
