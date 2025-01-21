@@ -119,64 +119,64 @@ const TaskListManager = () => {
         </button>
 
         {showAddTaskForm && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-    <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl relative">
-      {/* Close Button */}
-      <button
-        onClick={() => setShowAddTaskForm(false)} // Update this line to set the modal visibility to false
-        className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
-      
-      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Add New Task</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <input
-          type="text"
-          placeholder="Title"
-          value={newTask.title}
-          onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-          className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <input
-          type="text"
-          placeholder="Description"
-          value={newTask.description}
-          onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-          className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <select
-          value={newTask.status}
-          onChange={(e) => setNewTask({ ...newTask, status: e.target.value })}
-          className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="To Do">To Do</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Done">Done</option>
-        </select>
-      </div>
-      <button
-        onClick={handleAddTask}
-        className="mt-6 w-full sm:w-auto bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-600 transition duration-200"
-      >
-        Add Task
-      </button>
-    </div>
-  </div>
-)}
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl relative">
+              {/* Close Button */}
+              <button
+                onClick={() => setShowAddTaskForm(false)} // Update this line to set the modal visibility to false
+                className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+
+              <h2 className="text-2xl font-semibold mb-4 text-gray-800">Add New Task</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <input
+                  type="text"
+                  placeholder="Title"
+                  value={newTask.title}
+                  onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                  className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <input
+                  type="text"
+                  placeholder="Description"
+                  value={newTask.description}
+                  onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                  className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <select
+                  value={newTask.status}
+                  onChange={(e) => setNewTask({ ...newTask, status: e.target.value })}
+                  className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="To Do">To Do</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Done">Done</option>
+                </select>
+              </div>
+              <button
+                onClick={handleAddTask}
+                className="mt-6 w-full sm:w-auto bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-600 transition duration-200"
+              >
+                Add Task
+              </button>
+            </div>
+          </div>
+        )}
 
       </div>
 
