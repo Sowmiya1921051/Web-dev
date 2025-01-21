@@ -8,6 +8,8 @@ const TaskListManager = () => {
   const [tasks, setTasks] = useState([]);
   const [filterStatus, setFilterStatus] = useState('');
   const [table, setTable] = useState(null);
+  const [newTask, setNewTask] = useState({ title: '', description: '', status: 'To Do' });
+  const [showAddTaskForm, setShowAddTaskForm] = useState(false);
 
   useEffect(() => {
     // Fetch initial task data from the API
@@ -57,17 +59,22 @@ const TaskListManager = () => {
   }, [tasks]);
 
   const handleAddTask = () => {
-    const newTask = {
+    if (!newTask.title || !newTask.description) {
+      toast.error('Please fill in all fields.');
+      return;
+    }
+
+    const newTaskWithId = {
       id: tasks.length + 1,
-      title: `New Task ${tasks.length + 1}`,
-      description: 'New Description',
-      status: 'To Do',
+      ...newTask,
     };
     setTasks((prevTasks) => {
-      const updatedTasks = [...prevTasks, newTask];
+      const updatedTasks = [...prevTasks, newTaskWithId];
       table.setData(updatedTasks);
       return updatedTasks;
     });
+    setNewTask({ title: '', description: '', status: 'To Do' });
+    setShowAddTaskForm(false);
     toast.success('Task added successfully!');
   };
 
@@ -95,14 +102,53 @@ const TaskListManager = () => {
       <Toaster />
       <h1 className="text-2xl font-bold mb-4">Task List Manager</h1>
 
-      <div className="flex justify-between items-center mb-4">
+      <div className="mb-4">
         <button
-          onClick={handleAddTask}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          onClick={() => setShowAddTaskForm(!showAddTaskForm)}
+          className="bg-green-500 text-white px-4 py-2 rounded"
         >
-          Add Task
+          {showAddTaskForm ? 'Hide Add Task Form' : 'Show Add Task Form'}
         </button>
 
+        {showAddTaskForm && (
+          <div className="mt-4">
+            <h2 className="text-xl font-semibold mb-2">Add New Task</h2>
+            <div className="grid grid-cols-3 gap-4">
+              <input
+                type="text"
+                placeholder="Title"
+                value={newTask.title}
+                onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                className="border px-3 py-2 rounded"
+              />
+              <input
+                type="text"
+                placeholder="Description"
+                value={newTask.description}
+                onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                className="border px-3 py-2 rounded"
+              />
+              <select
+                value={newTask.status}
+                onChange={(e) => setNewTask({ ...newTask, status: e.target.value })}
+                className="border px-3 py-2 rounded"
+              >
+                <option value="To Do">To Do</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Done">Done</option>
+              </select>
+            </div>
+            <button
+              onClick={handleAddTask}
+              className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
+            >
+              Add Task
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div className="flex justify-between items-center mb-4">
         <select
           value={filterStatus}
           onChange={handleFilter}
