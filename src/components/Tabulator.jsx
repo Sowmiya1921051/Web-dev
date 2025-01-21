@@ -51,14 +51,6 @@ const TaskListManager = () => {
             formatter: (cell) => (cell.getValue() ? '✔️' : '❌'),
             width: 100,
           },
-          // {
-          //   title: 'Actions',
-          //   formatter: () => '<button class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>',
-          //   width: 100,
-          //   cellClick: (e, cell) => {
-          //     handleDelete(cell.getRow().getData().id);
-          //   },
-          // },
         ],
       });
       setTable(newTable);
@@ -99,9 +91,9 @@ const TaskListManager = () => {
     const status = e.target.value;
     setFilterStatus(status);
     if (status) {
-      table.setFilter('status', '=', status);
+      table.setFilter('status', '=', status); // Apply the Tabulator filter by status
     } else {
-      table.clearFilter();
+      table.clearFilter(); // Clear the filter if no status is selected
     }
   };
 
@@ -123,7 +115,7 @@ const TaskListManager = () => {
             <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl relative">
               {/* Close Button */}
               <button
-                onClick={() => setShowAddTaskForm(false)} // Update this line to set the modal visibility to false
+                onClick={() => setShowAddTaskForm(false)}
                 className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none"
               >
                 <svg
@@ -177,7 +169,6 @@ const TaskListManager = () => {
             </div>
           </div>
         )}
-
       </div>
 
       <div className="flex justify-between items-center mb-4">
